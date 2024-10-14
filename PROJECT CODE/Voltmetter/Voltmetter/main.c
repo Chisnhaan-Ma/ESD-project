@@ -10,23 +10,23 @@
 #include "util/delay.h"
 #include <string.h>
 #include <stdio.h>
-#define LCD_data_DDR DDRC
-#define LCD_data_PORT PORTC
-#define LCD_com_DDR DDRD
-#define LCD_com_PORT PORTD
+#define LCD_data_DDR DDRD
+#define LCD_data_PORT PORTD
+#define LCD_com_DDR DDRB
+#define LCD_com_PORT PORTB
 
-#define RS 4
-#define RW 5
-#define EN 6
+#define RS 5
+#define RW 6
+#define EN 7
 
 
 #define BUTTON_DDR DDRB
 #define	BUTTON_PORT PORTB
-#define Single_mode 6
-#define Diff_mode 7
-#define Gain_1 3
-#define Gain_10	4
-#define Gain_200 5
+#define Single_mode 0
+#define Diff_mode 1
+#define Gain_1 2
+#define Gain_10	3
+#define Gain_200 4
 
 
 void LCD_com(unsigned char	cmnd);
@@ -40,7 +40,16 @@ void Diff_200();
 
 
 int main(void)
-{
+{	
+ 	//DDRA = 0xff;
+//  	
+ 
+//   		PORTA=0;
+// 		_delay_ms(100);
+//  		PORTA=0xff;
+//   		_delay_ms(100);
+	
+	
     LCD_com_DDR |= (1<<RS) | (1<<EN)|(1<<RW)|(0<<PB5)|(0<<PB6)|(0<<PB7)|(0<<PB4) ;
 	LCD_data_DDR = 0xFF;
 	LCD_com(0x38);
@@ -52,7 +61,7 @@ int main(void)
 	LCD_com(0xC4);
 	LCD_string("Voltmeter");
 	_delay_ms(100);
-
+  
 	//BUTTON_DDR = 0x00;
 	BUTTON_PORT = 0xf8;
 	
@@ -62,7 +71,7 @@ int main(void)
 	LCD_com(0xC0);
 	LCD_string("to select mode!");
 	_delay_ms(100);
-	
+	 
 	LCD_com(0x01);
 	LCD_string("Single");
 	LCD_com(0xC0);

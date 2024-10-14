@@ -86,19 +86,19 @@ Disassembly of section .text:
 void LCD_com(unsigned char	cmnd)
 {
 	LCD_com_PORT &= ~(1<<RW);
-  82:	92 b3       	in	r25, 0x12	; 18
-  84:	9f 7d       	andi	r25, 0xDF	; 223
-  86:	92 bb       	out	0x12, r25	; 18
+  82:	98 b3       	in	r25, 0x18	; 24
+  84:	9f 7b       	andi	r25, 0xBF	; 191
+  86:	98 bb       	out	0x18, r25	; 24
 	LCD_com_PORT &= ~(1<<RS);
-  88:	92 b3       	in	r25, 0x12	; 18
-  8a:	9f 7e       	andi	r25, 0xEF	; 239
-  8c:	92 bb       	out	0x12, r25	; 18
+  88:	98 b3       	in	r25, 0x18	; 24
+  8a:	9f 7d       	andi	r25, 0xDF	; 223
+  8c:	98 bb       	out	0x18, r25	; 24
 	LCD_data_PORT = cmnd;
-  8e:	85 bb       	out	0x15, r24	; 21
+  8e:	82 bb       	out	0x12, r24	; 18
 	LCD_com_PORT |= (1<<EN);
-  90:	82 b3       	in	r24, 0x12	; 18
-  92:	80 64       	ori	r24, 0x40	; 64
-  94:	82 bb       	out	0x12, r24	; 18
+  90:	88 b3       	in	r24, 0x18	; 24
+  92:	80 68       	ori	r24, 0x80	; 128
+  94:	88 bb       	out	0x18, r24	; 24
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -113,9 +113,9 @@ void LCD_com(unsigned char	cmnd)
   a0:	00 00       	nop
 	_delay_ms(1);
 	LCD_com_PORT &= ~(1<<EN);
-  a2:	82 b3       	in	r24, 0x12	; 18
-  a4:	8f 7b       	andi	r24, 0xBF	; 191
-  a6:	82 bb       	out	0x12, r24	; 18
+  a2:	88 b3       	in	r24, 0x18	; 24
+  a4:	8f 77       	andi	r24, 0x7F	; 127
+  a6:	88 bb       	out	0x18, r24	; 24
   a8:	8f e0       	ldi	r24, 0x0F	; 15
   aa:	97 e2       	ldi	r25, 0x27	; 39
   ac:	01 97       	sbiw	r24, 0x01	; 1
@@ -131,19 +131,19 @@ void LCD_com(unsigned char	cmnd)
 void LCD_char(unsigned char char_data)
 {
 		LCD_com_PORT &= ~(1<<RW);
-  b6:	92 b3       	in	r25, 0x12	; 18
-  b8:	9f 7d       	andi	r25, 0xDF	; 223
-  ba:	92 bb       	out	0x12, r25	; 18
+  b6:	98 b3       	in	r25, 0x18	; 24
+  b8:	9f 7b       	andi	r25, 0xBF	; 191
+  ba:	98 bb       	out	0x18, r25	; 24
 		LCD_com_PORT |= (1<<RS);
-  bc:	92 b3       	in	r25, 0x12	; 18
-  be:	90 61       	ori	r25, 0x10	; 16
-  c0:	92 bb       	out	0x12, r25	; 18
+  bc:	98 b3       	in	r25, 0x18	; 24
+  be:	90 62       	ori	r25, 0x20	; 32
+  c0:	98 bb       	out	0x18, r25	; 24
 		LCD_data_PORT = char_data;
-  c2:	85 bb       	out	0x15, r24	; 21
+  c2:	82 bb       	out	0x12, r24	; 18
 		LCD_com_PORT |= (1<<EN);
-  c4:	82 b3       	in	r24, 0x12	; 18
-  c6:	80 64       	ori	r24, 0x40	; 64
-  c8:	82 bb       	out	0x12, r24	; 18
+  c4:	88 b3       	in	r24, 0x18	; 24
+  c6:	80 68       	ori	r24, 0x80	; 128
+  c8:	88 bb       	out	0x18, r24	; 24
   ca:	8f ec       	ldi	r24, 0xCF	; 207
   cc:	97 e0       	ldi	r25, 0x07	; 7
   ce:	01 97       	sbiw	r24, 0x01	; 1
@@ -152,9 +152,9 @@ void LCD_char(unsigned char char_data)
   d4:	00 00       	nop
 		_delay_ms(1);
 		LCD_com_PORT &= ~(1<<EN);
-  d6:	82 b3       	in	r24, 0x12	; 18
-  d8:	8f 7b       	andi	r24, 0xBF	; 191
-  da:	82 bb       	out	0x12, r24	; 18
+  d6:	88 b3       	in	r24, 0x18	; 24
+  d8:	8f 77       	andi	r24, 0x7F	; 127
+  da:	88 bb       	out	0x18, r24	; 24
   dc:	8f e0       	ldi	r24, 0x0F	; 15
   de:	97 e2       	ldi	r25, 0x27	; 39
   e0:	01 97       	sbiw	r24, 0x01	; 1
@@ -699,7 +699,7 @@ void Diff()
 	{
 		
 		if((PINB & (1<<Gain_200)) == 0)
- 44a:	b5 99       	sbic	0x16, 5	; 22
+ 44a:	b4 99       	sbic	0x16, 4	; 22
  44c:	09 c0       	rjmp	.+18     	; 0x460 <__stack+0x1>
  44e:	8f e1       	ldi	r24, 0x1F	; 31
  450:	9e e4       	ldi	r25, 0x4E	; 78
@@ -710,7 +710,7 @@ void Diff()
 		{
 			_delay_ms(10);
 			if((PINB & (1<<Gain_200)) == 0)
- 45a:	b5 9b       	sbis	0x16, 5	; 22
+ 45a:	b4 9b       	sbis	0x16, 4	; 22
 			{
 				Diff_200();
  45c:	0e 94 a7 01 	call	0x34e	; 0x34e <Diff_200>
@@ -718,7 +718,7 @@ void Diff()
 		}
 	
 		if((PINB & (1<<Gain_10)) == 0)
- 460:	b4 99       	sbic	0x16, 4	; 22
+ 460:	b3 99       	sbic	0x16, 3	; 22
  462:	09 c0       	rjmp	.+18     	; 0x476 <__stack+0x17>
  464:	8f e1       	ldi	r24, 0x1F	; 31
  466:	9e e4       	ldi	r25, 0x4E	; 78
@@ -729,7 +729,7 @@ void Diff()
 		{
 			_delay_ms(10);
 			if((PINB & (1<<Gain_10)) == 0)
- 470:	b4 9b       	sbis	0x16, 4	; 22
+ 470:	b3 9b       	sbis	0x16, 3	; 22
 			{
 			Diff_10();
  472:	0e 94 3e 01 	call	0x27c	; 0x27c <Diff_10>
@@ -737,7 +737,7 @@ void Diff()
 		}
 		
 		if((PINB & (1<<Gain_1)) == 0)
- 476:	b3 99       	sbic	0x16, 3	; 22
+ 476:	b2 99       	sbic	0x16, 2	; 22
  478:	e8 cf       	rjmp	.-48     	; 0x44a <Diff+0x2e>
  47a:	8f e1       	ldi	r24, 0x1F	; 31
  47c:	9e e4       	ldi	r25, 0x4E	; 78
@@ -748,25 +748,25 @@ void Diff()
 		{
 			_delay_ms(10);
 			if((PINB & (1<<Gain_1)) == 0)
- 486:	b3 99       	sbic	0x16, 3	; 22
+ 486:	b2 99       	sbic	0x16, 2	; 22
  488:	e0 cf       	rjmp	.-64     	; 0x44a <Diff+0x2e>
 			{
 				Diff_1();
  48a:	0e 94 d5 00 	call	0x1aa	; 0x1aa <Diff_1>
 
 0000048e <main>:
-void Diff_200();
-
-
-int main(void)
-{
+// 		_delay_ms(100);
+//  		PORTA=0xff;
+//   		_delay_ms(100);
+	
+	
     LCD_com_DDR |= (1<<RS) | (1<<EN)|(1<<RW)|(0<<PB5)|(0<<PB6)|(0<<PB7)|(0<<PB4) ;
- 48e:	81 b3       	in	r24, 0x11	; 17
- 490:	80 67       	ori	r24, 0x70	; 112
- 492:	81 bb       	out	0x11, r24	; 17
+ 48e:	87 b3       	in	r24, 0x17	; 23
+ 490:	80 6e       	ori	r24, 0xE0	; 224
+ 492:	87 bb       	out	0x17, r24	; 23
 	LCD_data_DDR = 0xFF;
  494:	8f ef       	ldi	r24, 0xFF	; 255
- 496:	84 bb       	out	0x14, r24	; 20
+ 496:	81 bb       	out	0x11, r24	; 17
 	LCD_com(0x38);
  498:	88 e3       	ldi	r24, 0x38	; 56
  49a:	0e 94 41 00 	call	0x82	; 0x82 <LCD_com>
@@ -801,7 +801,7 @@ int main(void)
  4d4:	00 c0       	rjmp	.+0      	; 0x4d6 <main+0x48>
  4d6:	00 00       	nop
 	_delay_ms(100);
-
+  
 	//BUTTON_DDR = 0x00;
 	BUTTON_PORT = 0xf8;
  4d8:	88 ef       	ldi	r24, 0xF8	; 248
@@ -834,7 +834,7 @@ int main(void)
  50c:	00 c0       	rjmp	.+0      	; 0x50e <main+0x80>
  50e:	00 00       	nop
 	_delay_ms(100);
-	
+	 
 	LCD_com(0x01);
  510:	81 e0       	ldi	r24, 0x01	; 1
  512:	0e 94 41 00 	call	0x82	; 0x82 <LCD_com>
@@ -853,7 +853,7 @@ int main(void)
     while (1) 
     {
 		if((PINB & (1<<Diff_mode)) == 0)
- 52c:	b7 99       	sbic	0x16, 7	; 22
+ 52c:	b1 99       	sbic	0x16, 1	; 22
  52e:	09 c0       	rjmp	.+18     	; 0x542 <main+0xb4>
  530:	8f e1       	ldi	r24, 0x1F	; 31
  532:	9e e4       	ldi	r25, 0x4E	; 78
@@ -864,13 +864,13 @@ int main(void)
 		{
 			_delay_ms(10);
 			if((PINB & (1<<Diff_mode)) == 0)
- 53c:	b7 9b       	sbis	0x16, 7	; 22
+ 53c:	b1 9b       	sbis	0x16, 1	; 22
 			Diff();
  53e:	0e 94 0e 02 	call	0x41c	; 0x41c <Diff>
 		}
 		
 		if((PINB & (1<<Single_mode)) == 0)
- 542:	b6 99       	sbic	0x16, 6	; 22
+ 542:	b0 99       	sbic	0x16, 0	; 22
  544:	f3 cf       	rjmp	.-26     	; 0x52c <main+0x9e>
  546:	8f e1       	ldi	r24, 0x1F	; 31
  548:	9e e4       	ldi	r25, 0x4E	; 78
@@ -881,7 +881,7 @@ int main(void)
 		{
 			_delay_ms(10);
 			if((PINB & (1<<Single_mode)) == 0)
- 552:	b6 99       	sbic	0x16, 6	; 22
+ 552:	b0 99       	sbic	0x16, 0	; 22
  554:	eb cf       	rjmp	.-42     	; 0x52c <main+0x9e>
 			Single();
  556:	0e 94 8b 00 	call	0x116	; 0x116 <Single>
