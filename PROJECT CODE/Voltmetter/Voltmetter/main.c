@@ -10,6 +10,8 @@
 #include "util/delay.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #define LCD_data_DDR DDRD
 #define LCD_data_PORT PORTD
 #define LCD_com_DDR DDRB
@@ -41,16 +43,9 @@ void Diff_200();
 
 int main(void)
 {	
- 	//DDRA = 0xff;
-//  	
- 
-//   		PORTA=0;
-// 		_delay_ms(100);
-//  		PORTA=0xff;
-//   		_delay_ms(100);
-	
-	
-    LCD_com_DDR |= (1<<RS) | (1<<EN)|(1<<RW)|(0<<PB5)|(0<<PB6)|(0<<PB7)|(0<<PB4) ;
+
+    LCD_com_DDR |= (1<<RS) | (1<<EN)|(1<<RW)|(0<<Single_mode)|(0<<Diff_mode)|(0<<Gain_1)|(0<<Gain_10)|(0<<Gain_200) ;
+	PORTB |= (1<<Single_mode)|(1<<Diff_mode)|(1<<Gain_1)|(1<<Gain_10)|(1<<Gain_200);
 	LCD_data_DDR = 0xFF;
 	LCD_com(0x38);
 	LCD_com(0x0E);
@@ -62,8 +57,8 @@ int main(void)
 	LCD_string("Voltmeter");
 	_delay_ms(100);
   
-	//BUTTON_DDR = 0x00;
-	BUTTON_PORT = 0xf8;
+	//BUTTON_DDR = 0x07;
+	//BUTTON_PORT = 0xF8;
 	
 	LCD_com(0x01);
 	LCD_com(0x80);
@@ -199,8 +194,8 @@ void Diff()
 
 void Diff_1()
 {
-	long double  Vin = 0;
-	int V = 0, V1, V2, V3, V4, V5;
+	double  Vin = 0;
+	int32_t V = 0, V1, V2, V3, V4, V5;
 	LCD_com(0x01);
 	LCD_string("Diff x1");
 	ADMUX |= (1<<REFS0)|(1<<MUX4);	//vi sai G = 1 PA0(+), PA1(-)
@@ -211,16 +206,10 @@ void Diff_1()
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF))); //check co ADIF
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
-		Vin = (ADC*4.8828);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
+		Vin = abs(ADC*9.76525/2);
+		//Vin = Vin*1000;			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
 		
-		if(Vin==0)
-		{
-			LCD_com(0xC0);
-			LCD_string("nguoc chieu V");
-		}
-		else
-		{
-			V = Vin;
+			V = (int)Vin;
 			V1 = (V/10000);
 			V2 = (V%10000)/1000;
 			V3 = ((V%10000)%1000)/100;
@@ -233,67 +222,61 @@ void Diff_1()
 			LCD_char(V3+0x30);
 			LCD_char(V4+0x30);
 			LCD_char(V5+0x30);
-		}
+		
 	}
 }
-
 void Diff_10()
 {
-	long double  Vin = 0;
-	int V = 0, V1, V2, V3, V4, V5;
+	 double  Vin = 0;
+	int32_t V = 0, V1, V2, V3, V4, V5;
 	LCD_com(0x01);
 	LCD_string("Diff x10");
-	ADMUX |= (1<<REFS0)|(1<<MUX4);	//vi sai G = 1 PA0(+), PA1(-)
+	ADMUX |= (1<<REFS0)|(1<<MUX3)|(1<<MUX0);	//vi sai G = 1 PA0(+), PA1(-)
 	ADCSRA |= (1<<ADEN)|(1<<ADPS2) |(1<<ADPS1)|(1<<ADPS0);
 	SFIOR |= 0;
 	while(1)
 	{
 		ADCSRA |= (1<<ADSC);
-		while(!(ADCSRA & (1<<ADIF))); //check co ADIF 
+		while(!(ADCSRA & (1<<ADIF))); //check co ADIF
+		_delay_ms(1);
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
-		Vin = (ADC*48.828);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
-		if(Vin==0)
-			{
-				LCD_com(0xC0);
-				LCD_string("nguoc chieu V");
-			}
-		else
-			{
-				V = Vin;
-				V1 = (V/10000);
-				V2 = (V%10000)/1000;
-				V3 = ((V%10000)%1000)/100;
-				V4 = ((((V%10000)%1000))%100)/10;
-				V5 = ((((V%10000)%1000))%100)%10;
-				LCD_com(0Xc5);
-				LCD_char(V1+0x30);
-				LCD_char(V2+0x30);
-				LCD_char(',');
-				LCD_char(V3+0x30);
-				LCD_char(V4+0x30);
-				LCD_char(V5+0x30);
-			}
+		Vin = abs(ADC*5/5120); // Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
+		Vin = Vin*1000;
+		V = (int)Vin;
+		V1 = (V/10000);
+		V2 = (V%10000)/1000;
+		V3 = ((V%10000)%1000)/100;
+		V4 = ((((V%10000)%1000))%100)/10;
+		V5 = ((((V%10000)%1000))%100)%10;
+		LCD_com(0Xc5);
+		LCD_char(V1+0x30);
+		LCD_char(',');
+		LCD_char(V2+0x30);
+		LCD_char(V3+0x30);
+		LCD_char(V4+0x30);
+		LCD_char(V5+0x30);
 	}
 }
 
 void Diff_200()
 {
-	double  Vin = 0;
-	int V = 0, V1, V2, V3, V4, V5; 
+	long double  Vin = 0;
+	int32_t V, V1, V2, V3, V4, V5; 
 	LCD_com(0x01);
 	LCD_string("Diff x200");
-	ADMUX |= (1<<REFS0)| (1<<MUX4);
-	ADCSRA |= (1<<ADEN) |(1<<ADPS2) |(1<<ADPS1);	//mode chuyen doi 1 lan
+	ADMUX |= (1<<REFS0)|(1<<MUX3)|(1<<MUX1)|(1<<MUX0);
+	ADCSRA |= (1<<ADEN) |(1<<ADPS2) |(1<<ADPS1)|(1<<ADPS0);	//mode chuyen doi 1 lan
 	while(1)
 	{
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF)));
 		ADCSRA |= (1<<ADIF);
-		Vin = (ADC*9.765); // Vin = ADC*50/512
+		Vin = abs(ADC*19534.125); // Vin = ADC*50/512
 		if(Vin==0)
 			{
 				LCD_com(0xC0);
 				LCD_string("nguoc chieu V");
+				
 			}
 		else
 			{

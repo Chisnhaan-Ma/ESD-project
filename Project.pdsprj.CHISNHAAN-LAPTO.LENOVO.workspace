@@ -3,17 +3,17 @@
  <FRAME activewindow="0">
   <PLACEMENT>2c00000002000000030000000083ffff0083ffffffffffffffffffff100000000c000000bf030000a4030000</PLACEMENT>
   <WINDOW type="default" module="ISIS">
-   <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="180" flipped="0" gridminor="254000" gridmode="16" snapidx="2" snap="254000" xcursor="16" orgmode="1" snaprange="127000">
+   <editor metric="0" gridmajor="2540000" mode="00000001" zoom="-1" scale="180" flipped="0" gridminor="254000" gridmode="16" snapidx="2" snap="254000" xcursor="16" orgmode="1" snaprange="127000">
     <world y1="-8890000" x1="-12700000" y2="8890000" x2="12700000"/>
-    <centre x="2794000" y="-6096000"/>
+    <centre x="-762000" y="0"/>
     <origin x="-11938000" y="-5334000"/>
    </editor>
   </WINDOW>
   <WINDOW type="VIEW3D" module="VIEW3D">
    <camera>
-    <position x="-8322144" y="5688570" z="21674202"/>
-    <focus x="-6706876" y="1821272" z="-3387207"/>
-    <up x="75705" y="986207" z="-147310"/>
+    <position x="-6595000" y="-1884033" z="7645533"/>
+    <focus x="-6595000" y="5761500" z="0"/>
+    <up x="0" y="707106" z="707106"/>
    </camera>
   </WINDOW>
   <WINDOW type="default" module="ARES">
@@ -32,9 +32,9 @@
   </editor>
  </MODULE>
  <MODULE name="ISIS">
-  <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="180" flipped="0" gridminor="254000" gridmode="16" snapidx="2" snap="254000" xcursor="16" orgmode="1" snaprange="127000">
+  <editor metric="0" gridmajor="2540000" mode="00000001" zoom="-1" scale="180" flipped="0" gridminor="254000" gridmode="16" snapidx="2" snap="254000" xcursor="16" orgmode="1" snaprange="127000">
    <world y1="-8890000" x1="-12700000" y2="8890000" x2="12700000"/>
-   <centre x="2794000" y="-6096000"/>
+   <centre x="-762000" y="0"/>
    <origin x="-11938000" y="-5334000"/>
   </editor>
  </MODULE>
@@ -42,7 +42,7 @@
   <PWI>
    <POPUP w="800" x="38" flags="00000002" y="129" h="200" pid="0" iid="-1">
     <PROPERTIES>
-     <ITEM name="Message Column Width">542</ITEM>
+     <ITEM name="Message Column Width">663</ITEM>
      <ITEM name="ShowGrid">No</ITEM>
      <ITEM name="Source Column Width">100</ITEM>
      <ITEM name="Time Column Width">120</ITEM>
