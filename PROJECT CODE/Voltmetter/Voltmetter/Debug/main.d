@@ -16,8 +16,7 @@ main.d main.o: .././main.c \
  d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
- d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
- d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h
+ d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h
 
 d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -54,5 +53,3 @@ d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\std
 d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
 d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h:
-
-d:\app\atmel\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
