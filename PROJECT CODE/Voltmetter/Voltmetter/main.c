@@ -19,15 +19,13 @@
 #define RW 6
 #define EN 7
 
-
-#define BUTTON_DDR DDRB
-#define	BUTTON_PORT PORTB
-#define Single_mode 0
-#define Diff_mode 1
-#define Gain_1 2
-#define Gain_10	3
-#define Gain_200 4
-
+#define BUTTON_DDR DDRA
+#define	BUTTON_PORT PORTA
+#define Single_mode 3
+#define Diff_mode 4
+#define Gain_1 5
+#define Gain_10 6
+#define Gain_200 7
 
 void LCD_com(unsigned char	cmnd);
 void LCD_char(unsigned char char_data);
@@ -38,12 +36,14 @@ void Diff_1();
 void Diff_10();
 void Diff_200();
 
-
 int main(void)
 {
-    LCD_com_DDR |= (1<<RS) | (1<<EN)|(1<<RW)|(0<<Single_mode)|(0<<Diff_mode)|(0<<Gain_1)|(0<<Gain_10)|(0<<Gain_200) ;
-    PORTB |= (1<<Single_mode)|(1<<Diff_mode)|(1<<Gain_1)|(1<<Gain_10)|(1<<Gain_200);
+    LCD_com_DDR |= (1<<RS)|(1<<EN)|(1<<RW);
 	LCD_data_DDR = 0xFF;
+	
+	BUTTON_DDR |= (0<<Single_mode)|(0<<Diff_mode)|(0<<Gain_1)|(0<<Gain_10)|(0<<Gain_200);
+	BUTTON_PORT |= (1<<Single_mode)|(1<<Diff_mode)|(1<<Gain_1)|(1<<Gain_10)|(1<<Gain_200);
+	
 	LCD_com(0x38);
 	LCD_com(0x0E);
 	LCD_com(0x01);
@@ -54,8 +54,7 @@ int main(void)
 	LCD_string("Voltmeter");
 	_delay_ms(100);
 
-	//BUTTON_DDR = 0x00;
-	BUTTON_PORT = 0xf8;
+
 	
 	LCD_com(0x01);
 	LCD_com(0x80);
@@ -71,17 +70,17 @@ int main(void)
 	
     while (1) 
     {
-		if((PINB & (1<<Diff_mode)) == 0)
+		if((PINA & (1<<Diff_mode)) == 0)
 		{
 			_delay_ms(10);
-			if((PINB & (1<<Diff_mode)) == 0)
+			if((PINA & (1<<Diff_mode)) == 0)
 			Diff();
 		}
 		
-		if((PINB & (1<<Single_mode)) == 0)
+		if((PINA & (1<<Single_mode)) == 0)
 		{
 			_delay_ms(10);
-			if((PINB & (1<<Single_mode)) == 0)
+			if((PINA & (1<<Single_mode)) == 0)
 			Single();
 		}
 		
@@ -127,7 +126,7 @@ void Single()
 	LCD_string("Single mode");
 	while(1)
 	{
-	ADMUX |= (1<<REFS0);
+	ADMUX |= (1<<REFS0)|(1<<MUX1);
 	ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADATE) |(1<<ADPS2) |(1<<ADPS1)|(1<<ADPS0);
 	SFIOR |= 0;
 	while(!(ADCSRA & (1<<ADIF)));
@@ -157,29 +156,29 @@ void Diff()
 	
 	while(1)
 	{
-		
-		if((PINB & (1<<Gain_200)) == 0)
+	
+		if((PINA & (1<<Gain_200)) == 0)
 		{
 			_delay_ms(10);
-			if((PINB & (1<<Gain_200)) == 0)
+			if((PINA & (1<<Gain_200)) == 0)
 			{
 				Diff_200();
 			}
 		}
 	
-		if((PINB & (1<<Gain_10)) == 0)
+		if((PINA & (1<<Gain_10)) == 0)
 		{
 			_delay_ms(10);
-			if((PINB & (1<<Gain_10)) == 0)
+			if((PINA & (1<<Gain_10)) == 0)
 			{
 			Diff_10();
 			}
 		}
 		
-		if((PINB & (1<<Gain_1)) == 0)
+		if((PINA & (1<<Gain_1)) == 0)
 		{
 			_delay_ms(10);
-			if((PINB & (1<<Gain_1)) == 0)
+			if((PINA & (1<<Gain_1)) == 0)
 			{
 				Diff_1();
 			}
@@ -204,11 +203,12 @@ void Diff_1()
 		while(!(ADCSRA & (1<<ADIF))); //check co ADIF
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
 		Vin = (ADC*4.8828);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
-		
+
 		if(Vin==0)
 		{
-			LCD_com(0xC0);
-			LCD_string("nguoc chieu V");
+			LCD_com(0xC2);
+			LCD_string(" Opposite ");
+	
 		}
 		else
 		{
@@ -218,36 +218,40 @@ void Diff_1()
 			V3 = ((V%10000)%1000)/100;
 			V4 = ((((V%10000)%1000))%100)/10;
 			V5 = ((((V%10000)%1000))%100)%10;
-			LCD_com(0Xc5);
+
+			LCD_com(0Xc2);
+			LCD_string("Vi=");
 			LCD_char(V1+0x30);
 			LCD_char(V2+0x30);
 			LCD_char(',');
 			LCD_char(V3+0x30);
 			LCD_char(V4+0x30);
 			LCD_char(V5+0x30);
+
 		}
 	}
 }
 
 void Diff_10()
 {
-	double  Vin = 0;
+	long double  Vin = 0;
 	long int V = 0, V1, V2, V3, V4, V5;
 	LCD_com(0x01);
 	LCD_string("Diff x10");
-	ADMUX |= (1<<REFS0)|(1<<MUX4);	//vi sai G = 1 PA0(+), PA1(-)
+	ADMUX |= (1<<REFS0)|(1<<MUX3)|(1<<MUX0);	//vi sai G = 1 PA0(+), PA1(-)
 	ADCSRA |= (1<<ADEN)|(1<<ADPS2) |(1<<ADPS1)|(1<<ADPS0);
 	SFIOR |= 0;
 	while(1)
 	{
+
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF))); //check co ADIF 
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
-		Vin = (ADC*48.828);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
+		Vin = (ADC*0.9765625/2);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
 		if(Vin==0)
 			{
-				LCD_com(0xC0);
-				LCD_string("nguoc chieu V");
+			LCD_com(0xC2);
+			LCD_string(" Opposite ");
 			}
 		else
 			{
@@ -257,13 +261,15 @@ void Diff_10()
 				V3 = ((V%10000)%1000)/100;
 				V4 = ((((V%10000)%1000))%100)/10;
 				V5 = ((((V%10000)%1000))%100)%10;
-				LCD_com(0Xc5);
+				LCD_com(0Xc2);
+				LCD_string("Vi=");
 				LCD_char(V1+0x30);
 				LCD_char(V2+0x30);
 				LCD_char(',');
 				LCD_char(V3+0x30);
 				LCD_char(V4+0x30);
 				LCD_char(V5+0x30);
+				LCD_com(0x80);
 			}
 	}
 }
@@ -274,18 +280,18 @@ void Diff_200()
 	int V = 0, V1, V2, V3, V4, V5; 
 	LCD_com(0x01);
 	LCD_string("Diff x200");
-	ADMUX |= (1<<REFS0)| (1<<MUX4);
+	ADMUX |= (1<<REFS0)|(1<<MUX3)|(1<<MUX1)|(1<<MUX0);
 	ADCSRA |= (1<<ADEN) |(1<<ADPS2) |(1<<ADPS1);	//mode chuyen doi 1 lan
 	while(1)
 	{
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF)));
 		ADCSRA |= (1<<ADIF);
-		Vin = (ADC*9.765); // Vin = ADC*50/512
+		Vin = (ADC*25/1024); 
 		if(Vin==0)
 			{
-				LCD_com(0xC0);
-				LCD_string("nguoc chieu V");
+			LCD_com(0xC2);
+			LCD_string(" Opposite ");
 			}
 		else
 			{
@@ -295,13 +301,15 @@ void Diff_200()
 				V3 = ((V%10000)%1000)/100;
 				V4 = ((((V%10000)%1000))%100)/10;
 				V5 = ((((V%10000)%1000))%100)%10;
-				LCD_com(0Xc5);
+				LCD_com(0Xc2);
+				LCD_string("Vi=");
 				LCD_char(V1+0x30);
 				LCD_char(V2+0x30);
+				LCD_char(',');
 				LCD_char(V3+0x30);
 				LCD_char(V4+0x30);
-				LCD_char(',');
 				LCD_char(V5+0x30);
+				LCD_com(0x80);
 			}
 	}
 }
