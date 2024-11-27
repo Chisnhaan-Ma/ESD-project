@@ -202,7 +202,7 @@ void Diff_1()
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF))); //check co ADIF
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
-		Vin = (ADC*4.8828);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
+		Vin = ((ADC&(0X1FF))*9.765625);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
 
 		if(Vin==0)
 		{
@@ -247,7 +247,7 @@ void Diff_10()
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF))); //check co ADIF 
 		ADCSRA |= (1<<ADIF);			// xoa co ADIF
-		Vin = (ADC*0.9765625/2);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
+		Vin = ((ADC&(0X1FF))*0.9765625);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
 		if(Vin==0)
 			{
 			LCD_com(0xC2);
@@ -287,7 +287,7 @@ void Diff_200()
 		ADCSRA |= (1<<ADSC);
 		while(!(ADCSRA & (1<<ADIF)));
 		ADCSRA |= (1<<ADIF);
-		Vin = (ADC*25/1024); 
+		Vin = ((ADC&(0X1FF))*25/512);			// Vin = ADC*5000/512 ;lay 3 so thap phan sau dau phay
 		if(Vin==0)
 			{
 			LCD_com(0xC2);
